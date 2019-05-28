@@ -26,7 +26,7 @@ import (
 )
 
 // PostgreSQLDependency indicates that a JVM application should be run with PostgreSQL JDBC enabled.
-const PostgreSQLDependency = "jdbc-postgresql"
+const PostgreSQLDependency = "postgresql-jdbc"
 
 // PostgreSQL represents a PostgreSQL contribution by the buildpack.
 type PostgreSQL struct {
@@ -44,7 +44,7 @@ func (p PostgreSQL) Contribute() error {
 			return err
 		}
 
-		return layer.AppendPathLaunchEnv("CLASSPATH", ":%s", destination)
+		return layer.AppendPathLaunchEnv("CLASSPATH", "%s", destination)
 	}, layers.Launch)
 }
 
