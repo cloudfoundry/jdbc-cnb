@@ -64,7 +64,7 @@ func TestMariaDB(t *testing.T) {
 
 			g.Expect(y.Contribute()).To(Succeed())
 
-			layer := f.Build.Layers.Layer("jdbc-mariadb")
+			layer := f.Build.Layers.Layer("mariadb-jdbc")
 			g.Expect(layer).To(test.HaveLayerMetadata(false, false, true))
 			g.Expect(filepath.Join(layer.Root, "stub-mariadb-java-client.jar")).To(BeARegularFile())
 			g.Expect(layer).To(test.HaveAppendPathLaunchEnvironment("CLASSPATH", ":%s",

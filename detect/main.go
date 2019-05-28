@@ -40,7 +40,10 @@ func main() {
 		os.Exit(101)
 	}
 
-	// TODO: Do I need build plan here?
+	if err := detect.BuildPlan.Init(); err != nil {
+		_, _ = fmt.Fprintf(os.Stderr, "Failed to initialize Build Plan: %s\n", err)
+		os.Exit(101)
+	}
 
 	if code, err := d(detect); err != nil {
 		detect.Logger.Info(err.Error())
@@ -60,16 +63,15 @@ func d(detect detect.Detect) (int, error) {
 			} else if !ok {
 				bp[jdbc.MariaDBDependency] = detect.BuildPlan[jdbc.MariaDBDependency]
 			}
-		} else if detect.Services.HasService("postgres") {
+		}
+
+		if detect.Services.HasService("postgres") {
 			if ok, err := helper.HasFile(detect.Application.Root, pp); err != nil {
 				return detect.Error(102), err
 			} else if !ok {
 				bp[jdbc.PostgreSQLDependency] = detect.BuildPlan[jdbc.PostgreSQLDependency]
 			}
-		} else {
-			return detect.Fail(), nil
 		}
-
 	}
 
 	if reflect.DeepEqual(bp, buildplan.BuildPlan{}) {

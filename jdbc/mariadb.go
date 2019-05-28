@@ -26,7 +26,7 @@ import (
 )
 
 // MariaDBDependency indicates that a JVM application should be run with MariaDB JDBC enabled.
-const MariaDBDependency = "jdbc-mariadb"
+const MariaDBDependency = "mariadb-jdbc"
 
 // MariaDB represents a MariaDB contribution by the buildpack.
 type MariaDB struct {

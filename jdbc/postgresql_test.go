@@ -64,10 +64,10 @@ func TestPostgreSQL(t *testing.T) {
 
 			g.Expect(y.Contribute()).To(Succeed())
 
-			layer := f.Build.Layers.Layer("jdbc-postgresql")
+			layer := f.Build.Layers.Layer("postgresql-jdbc")
 			g.Expect(layer).To(test.HaveLayerMetadata(false, false, true))
 			g.Expect(filepath.Join(layer.Root, "stub-postgresql.jar")).To(BeARegularFile())
-			g.Expect(layer).To(test.HaveAppendPathLaunchEnvironment("CLASSPATH", ":%s",
+			g.Expect(layer).To(test.HaveAppendPathLaunchEnvironment("CLASSPATH", "%s",
 				filepath.Join(layer.Root, "stub-postgresql.jar")))
 		})
 	}, spec.Report(report.Terminal{}))
