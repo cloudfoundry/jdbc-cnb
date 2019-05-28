@@ -21,6 +21,7 @@ import (
 	"os"
 
 	"github.com/buildpack/libbuildpack/buildplan"
+	"github.com/cloudfoundry/jdbc-cnb/jdbc"
 	"github.com/cloudfoundry/libcfbuildpack/build"
 )
 
@@ -40,5 +41,25 @@ func main() {
 }
 
 func b(build build.Build) (int, error) {
+	build.Logger.FirstLine(build.Logger.PrettyIdentity(build.Buildpack))
+
+	m, okm, err := jdbc.NewMariaDB(build)
+	if err != nil {
+		return build.Failure(102), err
+	} else if okm {
+		if err := m.Contribute(); err != nil {
+			return build.Failure(103), err
+		}
+	}
+
+	p, okp, err := jdbc.NewPostgreSQL(build)
+	if err != nil {
+		return build.Failure(102), err
+	} else if okp {
+		if err := p.Contribute(); err != nil {
+			return build.Failure(103), err
+		}
+	}
+
 	return build.Success(buildplan.BuildPlan{})
 }

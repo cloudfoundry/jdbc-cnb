@@ -46,9 +46,15 @@ func TestDetect(t *testing.T) {
 			g.Expect(d(f.Detect)).To(Equal(detect.FailStatusCode))
 		})
 
-		it("passes with mariadb service", func() {
-			f.AddBuildPlan(jvmapplication.Dependency, buildplan.Dependency{})
+		it("fails without jvm-application", func() {
 			f.AddService("mariadb", services.Credentials{"test-key": "test-value"})
+
+			g.Expect(d(f.Detect)).To(Equal(detect.FailStatusCode))
+		})
+
+		it("passes with mariadb service", func() {
+			f.AddService("mariadb", services.Credentials{"test-key": "test-value"})
+			f.AddBuildPlan(jvmapplication.Dependency, buildplan.Dependency{})
 
 			g.Expect(d(f.Detect)).To(Equal(detect.PassStatusCode))
 		})
@@ -71,6 +77,14 @@ func TestDetect(t *testing.T) {
 			f.AddBuildPlan(jvmapplication.Dependency, buildplan.Dependency{})
 			f.AddService("mariadb", services.Credentials{"test-key": "test-value"})
 			test.TouchFile(t, f.Detect.Application.Root, "mariadb-java-client-1.2.3.jar")
+
+			g.Expect(d(f.Detect)).To(Equal(detect.FailStatusCode))
+		})
+
+		it("fails with mysql service and a matching jar available", func() {
+			f.AddBuildPlan(jvmapplication.Dependency, buildplan.Dependency{})
+			f.AddService("mysql", services.Credentials{"test-key": "test-value"})
+			test.TouchFile(t, f.Detect.Application.Root, "mysql-connector-java-1.2.3.jar")
 
 			g.Expect(d(f.Detect)).To(Equal(detect.FailStatusCode))
 		})
