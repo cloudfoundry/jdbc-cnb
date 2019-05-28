@@ -1,7 +1,7 @@
 # `jdbc-cnb`
 The Cloud Foundry JDBC Buildpack is a Cloud Native Buildpack V3 that provides JDBC drivers to applications.
 
-This buildpack id designed too work in collaboration with other buildpacks.
+This buildpack is designed to work in collaboration with other buildpacks.
 
 ## Detection
 

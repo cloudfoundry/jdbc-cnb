@@ -19,9 +19,19 @@ package main
 import (
 	"fmt"
 	"os"
+	"reflect"
+	"regexp"
 
+	"github.com/buildpack/libbuildpack/buildplan"
+	"github.com/cloudfoundry/jdbc-cnb/jdbc"
+	"github.com/cloudfoundry/jvm-application-cnb/jvmapplication"
 	"github.com/cloudfoundry/libcfbuildpack/detect"
+	"github.com/cloudfoundry/libcfbuildpack/helper"
 )
+
+var mp = regexp.MustCompile(".*(mariadb-java-client|mysql-connector-java)-[\\d].*\\.jar")
+
+var pp = regexp.MustCompile(".*postgresql-([\\d].*)\\.jar")
 
 func main() {
 	detect, err := detect.DefaultDetect()
@@ -29,6 +39,8 @@ func main() {
 		_, _ = fmt.Fprintf(os.Stderr, "Failed to initialize Detect: %s\n", err)
 		os.Exit(101)
 	}
+
+	// TODO: Do I need build plan here?
 
 	if code, err := d(detect); err != nil {
 		detect.Logger.Info(err.Error())
@@ -39,5 +51,30 @@ func main() {
 }
 
 func d(detect detect.Detect) (int, error) {
-	return detect.Fail(), nil
+	bp := buildplan.BuildPlan{}
+
+	if _, ok := detect.BuildPlan[jvmapplication.Dependency]; ok {
+		if detect.Services.HasService("mariadb") || detect.Services.HasService("mysql") {
+			if ok, err := helper.HasFile(detect.Application.Root, mp); err != nil {
+				return detect.Error(102), err
+			} else if !ok {
+				bp[jdbc.MariaDBDependency] = detect.BuildPlan[jdbc.MariaDBDependency]
+			}
+		} else if detect.Services.HasService("postgres") {
+			if ok, err := helper.HasFile(detect.Application.Root, pp); err != nil {
+				return detect.Error(102), err
+			} else if !ok {
+				bp[jdbc.PostgreSQLDependency] = detect.BuildPlan[jdbc.PostgreSQLDependency]
+			}
+		} else {
+			return detect.Fail(), nil
+		}
+
+	}
+
+	if reflect.DeepEqual(bp, buildplan.BuildPlan{}) {
+		return detect.Fail(), nil
+	}
+
+	return detect.Pass(bp)
 }

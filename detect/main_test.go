@@ -19,7 +19,10 @@ package main
 import (
 	"testing"
 
+	"github.com/buildpack/libbuildpack/buildplan"
 	"github.com/buildpack/libbuildpack/detect"
+	"github.com/cloudfoundry/jvm-application-cnb/jvmapplication"
+	"github.com/cloudfoundry/libcfbuildpack/services"
 	"github.com/cloudfoundry/libcfbuildpack/test"
 	. "github.com/onsi/gomega"
 	"github.com/sclevine/spec"
@@ -37,8 +40,48 @@ func TestDetect(t *testing.T) {
 			f = test.NewDetectFactory(t)
 		})
 
-		it("always fails", func() {
+		it("fails without service", func() {
+			f.AddBuildPlan(jvmapplication.Dependency, buildplan.Dependency{})
+
 			g.Expect(d(f.Detect)).To(Equal(detect.FailStatusCode))
 		})
+
+		it("passes with mariadb service", func() {
+			f.AddBuildPlan(jvmapplication.Dependency, buildplan.Dependency{})
+			f.AddService("mariadb", services.Credentials{"test-key": "test-value"})
+
+			g.Expect(d(f.Detect)).To(Equal(detect.PassStatusCode))
+		})
+
+		it("passes with mysql service", func() {
+			f.AddBuildPlan(jvmapplication.Dependency, buildplan.Dependency{})
+			f.AddService("mysql", services.Credentials{"test-key": "test-value"})
+
+			g.Expect(d(f.Detect)).To(Equal(detect.PassStatusCode))
+		})
+
+		it("passes with postgresql service", func() {
+			f.AddBuildPlan(jvmapplication.Dependency, buildplan.Dependency{})
+			f.AddService("postgresql", services.Credentials{"test-key": "test-value"})
+
+			g.Expect(d(f.Detect)).To(Equal(detect.PassStatusCode))
+		})
+
+		it("fails with mariadb service and a matching jar available", func() {
+			f.AddBuildPlan(jvmapplication.Dependency, buildplan.Dependency{})
+			f.AddService("mariadb", services.Credentials{"test-key": "test-value"})
+			test.TouchFile(t, f.Detect.Application.Root, "mariadb-java-client-1.2.3.jar")
+
+			g.Expect(d(f.Detect)).To(Equal(detect.FailStatusCode))
+		})
+
+		it("fails with postgres service and a matching jar available", func() {
+			f.AddBuildPlan(jvmapplication.Dependency, buildplan.Dependency{})
+			f.AddService("postgres", services.Credentials{"test-key": "test-value"})
+			test.TouchFile(t, f.Detect.Application.Root, "subdir", "postgresql-1.2.3.jar")
+
+			g.Expect(d(f.Detect)).To(Equal(detect.FailStatusCode))
+		})
+
 	}, spec.Report(report.Terminal{}))
 }
