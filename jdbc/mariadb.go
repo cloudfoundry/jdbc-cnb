@@ -17,7 +17,6 @@
 package jdbc
 
 import (
-	"fmt"
 	"path/filepath"
 
 	"github.com/cloudfoundry/libcfbuildpack/build"
@@ -46,11 +45,6 @@ func (m MariaDB) Contribute() error {
 
 		return layer.AppendPathLaunchEnv("CLASSPATH", ":%s", destination)
 	}, layers.Launch)
-}
-
-// String makes MariaDB satisfy the Stringer interface.
-func (m MariaDB) String() string {
-	return fmt.Sprintf("MariaDB{ layer: %s }", m.layer)
 }
 
 // NewMariaDB creates a new MariaDB instance.

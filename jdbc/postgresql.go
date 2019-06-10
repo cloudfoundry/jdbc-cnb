@@ -17,7 +17,6 @@
 package jdbc
 
 import (
-	"fmt"
 	"path/filepath"
 
 	"github.com/cloudfoundry/libcfbuildpack/build"
@@ -46,11 +45,6 @@ func (p PostgreSQL) Contribute() error {
 
 		return layer.AppendPathLaunchEnv("CLASSPATH", "%s", destination)
 	}, layers.Launch)
-}
-
-// String makes PostgreSQL satisfy the Stringer interface.
-func (p PostgreSQL) String() string {
-	return fmt.Sprintf("PostgreSQL{ layer: %s }", p.layer)
 }
 
 // NewPostgreSQL creates a new PostgreSQL instance.
