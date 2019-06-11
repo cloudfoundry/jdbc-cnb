@@ -13,7 +13,7 @@ The detection phase passes if:
 * A service is bound with a payload containing a `binding_name`, `instance_name`, `label`, or `tag` containing `postgres` as a substring and build plan contains `jvm-application`
 * and the application does not contain postgresql-_version_.jar
     * Contributes `postgresql-jdbc` to the build plan
-    
+
 ## Build
 If the build plan contains
 
@@ -28,4 +28,4 @@ If the build plan contains
 ## License
 This buildpack is released under version 2.0 of the [Apache License][a].
 
-[a]: http://www.apache.org/licenses/LICENSE-2.0
+[a]: https://www.apache.org/licenses/LICENSE-2.0
