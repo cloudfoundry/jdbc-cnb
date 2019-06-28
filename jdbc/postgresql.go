@@ -35,7 +35,7 @@ type PostgreSQL struct {
 // Contribute makes the contribution to launch.
 func (p PostgreSQL) Contribute() error {
 	return p.layer.Contribute(func(artifact string, layer layers.DependencyLayer) error {
-		layer.Logger.SubsequentLine("Copying to %s", layer.Root)
+		layer.Logger.Body("Copying to %s", layer.Root)
 
 		destination := filepath.Join(layer.Root, layer.ArtifactName())
 
