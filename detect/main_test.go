@@ -24,7 +24,7 @@ import (
 	"github.com/cloudfoundry/jvm-application-cnb/jvmapplication"
 	"github.com/cloudfoundry/libcfbuildpack/services"
 	"github.com/cloudfoundry/libcfbuildpack/test"
-	. "github.com/onsi/gomega"
+	"github.com/onsi/gomega"
 	"github.com/sclevine/spec"
 	"github.com/sclevine/spec/report"
 )
@@ -32,7 +32,7 @@ import (
 func TestDetect(t *testing.T) {
 	spec.Run(t, "Detect", func(t *testing.T, _ spec.G, it spec.S) {
 
-		g := NewGomegaWithT(t)
+		g := gomega.NewWithT(t)
 
 		var f *test.DetectFactory
 
@@ -43,34 +43,34 @@ func TestDetect(t *testing.T) {
 		it("fails without service", func() {
 			f.AddBuildPlan(jvmapplication.Dependency, buildplan.Dependency{})
 
-			g.Expect(d(f.Detect)).To(Equal(detect.FailStatusCode))
+			g.Expect(d(f.Detect)).To(gomega.Equal(detect.FailStatusCode))
 		})
 
 		it("fails without jvm-application", func() {
 			f.AddService("mariadb", services.Credentials{"test-key": "test-value"})
 
-			g.Expect(d(f.Detect)).To(Equal(detect.FailStatusCode))
+			g.Expect(d(f.Detect)).To(gomega.Equal(detect.FailStatusCode))
 		})
 
 		it("passes with mariadb service", func() {
 			f.AddService("mariadb", services.Credentials{"test-key": "test-value"})
 			f.AddBuildPlan(jvmapplication.Dependency, buildplan.Dependency{})
 
-			g.Expect(d(f.Detect)).To(Equal(detect.PassStatusCode))
+			g.Expect(d(f.Detect)).To(gomega.Equal(detect.PassStatusCode))
 		})
 
 		it("passes with mysql service", func() {
 			f.AddBuildPlan(jvmapplication.Dependency, buildplan.Dependency{})
 			f.AddService("mysql", services.Credentials{"test-key": "test-value"})
 
-			g.Expect(d(f.Detect)).To(Equal(detect.PassStatusCode))
+			g.Expect(d(f.Detect)).To(gomega.Equal(detect.PassStatusCode))
 		})
 
 		it("passes with postgresql service", func() {
 			f.AddBuildPlan(jvmapplication.Dependency, buildplan.Dependency{})
 			f.AddService("postgresql", services.Credentials{"test-key": "test-value"})
 
-			g.Expect(d(f.Detect)).To(Equal(detect.PassStatusCode))
+			g.Expect(d(f.Detect)).To(gomega.Equal(detect.PassStatusCode))
 		})
 
 		it("fails with mariadb service and a matching jar available", func() {
@@ -78,7 +78,7 @@ func TestDetect(t *testing.T) {
 			f.AddService("mariadb", services.Credentials{"test-key": "test-value"})
 			test.TouchFile(t, f.Detect.Application.Root, "mariadb-java-client-1.2.3.jar")
 
-			g.Expect(d(f.Detect)).To(Equal(detect.FailStatusCode))
+			g.Expect(d(f.Detect)).To(gomega.Equal(detect.FailStatusCode))
 		})
 
 		it("fails with mysql service and a matching jar available", func() {
@@ -86,7 +86,7 @@ func TestDetect(t *testing.T) {
 			f.AddService("mysql", services.Credentials{"test-key": "test-value"})
 			test.TouchFile(t, f.Detect.Application.Root, "mysql-connector-java-1.2.3.jar")
 
-			g.Expect(d(f.Detect)).To(Equal(detect.FailStatusCode))
+			g.Expect(d(f.Detect)).To(gomega.Equal(detect.FailStatusCode))
 		})
 
 		it("fails with postgres service and a matching jar available", func() {
@@ -94,7 +94,7 @@ func TestDetect(t *testing.T) {
 			f.AddService("postgres", services.Credentials{"test-key": "test-value"})
 			test.TouchFile(t, f.Detect.Application.Root, "subdir", "postgresql-1.2.3.jar")
 
-			g.Expect(d(f.Detect)).To(Equal(detect.FailStatusCode))
+			g.Expect(d(f.Detect)).To(gomega.Equal(detect.FailStatusCode))
 		})
 
 	}, spec.Report(report.Terminal{}))

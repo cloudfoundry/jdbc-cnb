@@ -23,7 +23,7 @@ import (
 	"github.com/buildpack/libbuildpack/buildplan"
 	"github.com/cloudfoundry/jdbc-cnb/jdbc"
 	"github.com/cloudfoundry/libcfbuildpack/test"
-	. "github.com/onsi/gomega"
+	"github.com/onsi/gomega"
 	"github.com/sclevine/spec"
 	"github.com/sclevine/spec/report"
 )
@@ -31,7 +31,7 @@ import (
 func TestPostgreSQL(t *testing.T) {
 	spec.Run(t, "PostgreSQL", func(t *testing.T, _ spec.G, it spec.S) {
 
-		g := NewGomegaWithT(t)
+		g := gomega.NewWithT(t)
 
 		var f *test.BuildFactory
 
@@ -44,14 +44,14 @@ func TestPostgreSQL(t *testing.T) {
 			f.AddDependency(jdbc.PostgreSQLDependency, filepath.Join("testdata", "stub-postgresql.jar"))
 
 			_, ok, err := jdbc.NewPostgreSQL(f.Build)
-			g.Expect(err).NotTo(HaveOccurred())
-			g.Expect(ok).To(BeTrue())
+			g.Expect(err).NotTo(gomega.HaveOccurred())
+			g.Expect(ok).To(gomega.BeTrue())
 		})
 
 		it("returns false if build plan does not exist", func() {
 			_, ok, err := jdbc.NewPostgreSQL(f.Build)
-			g.Expect(err).NotTo(HaveOccurred())
-			g.Expect(ok).To(BeFalse())
+			g.Expect(err).NotTo(gomega.HaveOccurred())
+			g.Expect(ok).To(gomega.BeFalse())
 		})
 
 		it("contributes driver", func() {
@@ -59,14 +59,14 @@ func TestPostgreSQL(t *testing.T) {
 			f.AddDependency(jdbc.PostgreSQLDependency, filepath.Join("testdata", "stub-postgresql.jar"))
 
 			y, ok, err := jdbc.NewPostgreSQL(f.Build)
-			g.Expect(err).NotTo(HaveOccurred())
-			g.Expect(ok).To(BeTrue())
+			g.Expect(err).NotTo(gomega.HaveOccurred())
+			g.Expect(ok).To(gomega.BeTrue())
 
-			g.Expect(y.Contribute()).To(Succeed())
+			g.Expect(y.Contribute()).To(gomega.Succeed())
 
 			layer := f.Build.Layers.Layer("postgresql-jdbc")
 			g.Expect(layer).To(test.HaveLayerMetadata(false, false, true))
-			g.Expect(filepath.Join(layer.Root, "stub-postgresql.jar")).To(BeARegularFile())
+			g.Expect(filepath.Join(layer.Root, "stub-postgresql.jar")).To(gomega.BeARegularFile())
 			g.Expect(layer).To(test.HaveAppendPathLaunchEnvironment("CLASSPATH", "%s",
 				filepath.Join(layer.Root, "stub-postgresql.jar")))
 		})
