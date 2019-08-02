@@ -21,6 +21,7 @@ import (
 
 	"github.com/buildpack/libbuildpack/buildplan"
 	"github.com/buildpack/libbuildpack/detect"
+	"github.com/cloudfoundry/jdbc-cnb/jdbc"
 	"github.com/cloudfoundry/jvm-application-cnb/jvmapplication"
 	"github.com/cloudfoundry/libcfbuildpack/services"
 	"github.com/cloudfoundry/libcfbuildpack/test"
@@ -41,40 +42,101 @@ func TestDetect(t *testing.T) {
 		})
 
 		it("fails without service", func() {
-			f.AddBuildPlan(jvmapplication.Dependency, buildplan.Dependency{})
-
-			g.Expect(d(f.Detect)).To(gomega.Equal(detect.FailStatusCode))
-		})
-
-		it("fails without jvm-application", func() {
-			f.AddService("mariadb", services.Credentials{"test-key": "test-value"})
-
 			g.Expect(d(f.Detect)).To(gomega.Equal(detect.FailStatusCode))
 		})
 
 		it("passes with mariadb service", func() {
 			f.AddService("mariadb", services.Credentials{"test-key": "test-value"})
-			f.AddBuildPlan(jvmapplication.Dependency, buildplan.Dependency{})
 
 			g.Expect(d(f.Detect)).To(gomega.Equal(detect.PassStatusCode))
+			g.Expect(f.Plans).To(gomega.Equal(buildplan.Plans{
+				Plan: buildplan.Plan{
+					Provides: []buildplan.Provided{
+						{Name: jdbc.MariaDBDependency},
+					},
+					Requires: []buildplan.Required{
+						{Name: jvmapplication.Dependency},
+						{Name: jdbc.MariaDBDependency},
+					},
+				},
+			}))
 		})
 
 		it("passes with mysql service", func() {
-			f.AddBuildPlan(jvmapplication.Dependency, buildplan.Dependency{})
 			f.AddService("mysql", services.Credentials{"test-key": "test-value"})
 
 			g.Expect(d(f.Detect)).To(gomega.Equal(detect.PassStatusCode))
+			g.Expect(f.Plans).To(gomega.Equal(buildplan.Plans{
+				Plan: buildplan.Plan{
+					Provides: []buildplan.Provided{
+						{Name: jdbc.MariaDBDependency},
+					},
+					Requires: []buildplan.Required{
+						{Name: jvmapplication.Dependency},
+						{Name: jdbc.MariaDBDependency},
+					},
+				},
+			}))
 		})
 
 		it("passes with postgresql service", func() {
-			f.AddBuildPlan(jvmapplication.Dependency, buildplan.Dependency{})
 			f.AddService("postgresql", services.Credentials{"test-key": "test-value"})
 
 			g.Expect(d(f.Detect)).To(gomega.Equal(detect.PassStatusCode))
+			g.Expect(f.Plans).To(gomega.Equal(buildplan.Plans{
+				Plan: buildplan.Plan{
+					Provides: []buildplan.Provided{
+						{Name: jdbc.PostgreSQLDependency},
+					},
+					Requires: []buildplan.Required{
+						{Name: jvmapplication.Dependency},
+						{Name: jdbc.PostgreSQLDependency},
+					},
+				},
+			}))
+		})
+
+		it("passes with mariadb and postgresql services", func() {
+			f.AddService("mariadb", services.Credentials{"test-key": "test-value"})
+			f.AddService("postgresql", services.Credentials{"test-key": "test-value"})
+
+			g.Expect(d(f.Detect)).To(gomega.Equal(detect.PassStatusCode))
+			g.Expect(f.Plans).To(gomega.Equal(buildplan.Plans{
+				Plan: buildplan.Plan{
+					Provides: []buildplan.Provided{
+						{Name: jdbc.MariaDBDependency},
+						{Name: jdbc.PostgreSQLDependency},
+					},
+					Requires: []buildplan.Required{
+						{Name: jvmapplication.Dependency},
+						{Name: jdbc.MariaDBDependency},
+						{Name: jdbc.PostgreSQLDependency},
+					},
+				},
+			}))
+		})
+
+		it("passes with mysql and postgresql services", func() {
+			f.AddService("mysql", services.Credentials{"test-key": "test-value"})
+			f.AddService("postgresql", services.Credentials{"test-key": "test-value"})
+
+			g.Expect(d(f.Detect)).To(gomega.Equal(detect.PassStatusCode))
+			g.Expect(f.Plans).To(gomega.Equal(buildplan.Plans{
+				Plan: buildplan.Plan{
+					Provides: []buildplan.Provided{
+						{Name: jdbc.MariaDBDependency},
+						{Name: jdbc.PostgreSQLDependency},
+					},
+					Requires: []buildplan.Required{
+						{Name: jvmapplication.Dependency},
+						{Name: jdbc.MariaDBDependency},
+						{Name: jdbc.PostgreSQLDependency},
+					},
+				},
+			}))
 		})
 
 		it("fails with mariadb service and a matching jar available", func() {
-			f.AddBuildPlan(jvmapplication.Dependency, buildplan.Dependency{})
 			f.AddService("mariadb", services.Credentials{"test-key": "test-value"})
 			test.TouchFile(t, f.Detect.Application.Root, "mariadb-java-client-1.2.3.jar")
 
@@ -82,7 +144,6 @@ func TestDetect(t *testing.T) {
 		})
 
 		it("fails with mysql service and a matching jar available", func() {
-			f.AddBuildPlan(jvmapplication.Dependency, buildplan.Dependency{})
 			f.AddService("mysql", services.Credentials{"test-key": "test-value"})
 			test.TouchFile(t, f.Detect.Application.Root, "mysql-connector-java-1.2.3.jar")
 
@@ -90,7 +151,6 @@ func TestDetect(t *testing.T) {
 		})
 
 		it("fails with postgres service and a matching jar available", func() {
-			f.AddBuildPlan(jvmapplication.Dependency, buildplan.Dependency{})
 			f.AddService("postgres", services.Credentials{"test-key": "test-value"})
 			test.TouchFile(t, f.Detect.Application.Root, "subdir", "postgresql-1.2.3.jar")
 

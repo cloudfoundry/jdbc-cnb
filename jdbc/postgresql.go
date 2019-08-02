@@ -49,8 +49,10 @@ func (p PostgreSQL) Contribute() error {
 
 // NewPostgreSQL creates a new PostgreSQL instance.
 func NewPostgreSQL(build build.Build) (PostgreSQL, bool, error) {
-	bp, ok := build.BuildPlan[PostgreSQLDependency]
-	if !ok {
+	p, ok, err := build.Plans.GetShallowMerged(PostgreSQLDependency)
+	if err != nil {
+		return PostgreSQL{}, false, err
+	} else if !ok {
 		return PostgreSQL{}, false, nil
 	}
 
@@ -59,7 +61,7 @@ func NewPostgreSQL(build build.Build) (PostgreSQL, bool, error) {
 		return PostgreSQL{}, false, err
 	}
 
-	dep, err := deps.Best(PostgreSQLDependency, bp.Version, build.Stack)
+	dep, err := deps.Best(PostgreSQLDependency, p.Version, build.Stack)
 	if err != nil {
 		return PostgreSQL{}, false, err
 	}
