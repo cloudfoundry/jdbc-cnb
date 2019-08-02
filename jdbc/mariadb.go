@@ -49,8 +49,10 @@ func (m MariaDB) Contribute() error {
 
 // NewMariaDB creates a new MariaDB instance.
 func NewMariaDB(build build.Build) (MariaDB, bool, error) {
-	bp, ok := build.BuildPlan[MariaDBDependency]
-	if !ok {
+	p, ok, err := build.Plans.GetShallowMerged(MariaDBDependency)
+	if err != nil {
+		return MariaDB{}, false, err
+	} else if !ok {
 		return MariaDB{}, false, nil
 	}
 
@@ -59,7 +61,7 @@ func NewMariaDB(build build.Build) (MariaDB, bool, error) {
 		return MariaDB{}, false, err
 	}
 
-	dep, err := deps.Best(MariaDBDependency, bp.Version, build.Stack)
+	dep, err := deps.Best(MariaDBDependency, p.Version, build.Stack)
 	if err != nil {
 		return MariaDB{}, false, err
 	}

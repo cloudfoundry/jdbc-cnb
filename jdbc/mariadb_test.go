@@ -20,8 +20,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/buildpack/libbuildpack/buildplan"
 	"github.com/cloudfoundry/jdbc-cnb/jdbc"
+	"github.com/cloudfoundry/libcfbuildpack/buildpackplan"
 	"github.com/cloudfoundry/libcfbuildpack/test"
 	"github.com/onsi/gomega"
 	"github.com/sclevine/spec"
@@ -40,7 +40,7 @@ func TestMariaDB(t *testing.T) {
 		})
 
 		it("returns true if build plan does exist", func() {
-			f.AddBuildPlan(jdbc.MariaDBDependency, buildplan.Dependency{})
+			f.AddPlan(buildpackplan.Plan{Name: jdbc.MariaDBDependency})
 			f.AddDependency(jdbc.MariaDBDependency, filepath.Join("testdata", "stub-mariadb-java-client.jar"))
 
 			_, ok, err := jdbc.NewMariaDB(f.Build)
@@ -55,7 +55,7 @@ func TestMariaDB(t *testing.T) {
 		})
 
 		it("contributes driver", func() {
-			f.AddBuildPlan(jdbc.MariaDBDependency, buildplan.Dependency{})
+			f.AddPlan(buildpackplan.Plan{Name: jdbc.MariaDBDependency})
 			f.AddDependency(jdbc.MariaDBDependency, filepath.Join("testdata", "stub-mariadb-java-client.jar"))
 
 			y, ok, err := jdbc.NewMariaDB(f.Build)

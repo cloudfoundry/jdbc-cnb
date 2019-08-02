@@ -19,7 +19,6 @@ package main
 import (
 	"fmt"
 	"os"
-	"reflect"
 	"regexp"
 
 	"github.com/buildpack/libbuildpack/buildplan"
@@ -40,11 +39,6 @@ func main() {
 		os.Exit(101)
 	}
 
-	if err := detect.BuildPlan.Init(); err != nil {
-		_, _ = fmt.Fprintf(os.Stderr, "Failed to initialize Build Plan: %s\n", err)
-		os.Exit(101)
-	}
-
 	if code, err := d(detect); err != nil {
 		detect.Logger.Info(err.Error())
 		os.Exit(code)
@@ -54,29 +48,37 @@ func main() {
 }
 
 func d(detect detect.Detect) (int, error) {
-	bp := buildplan.BuildPlan{}
-
-	if _, ok := detect.BuildPlan[jvmapplication.Dependency]; ok {
-		if detect.Services.HasService("mariadb") || detect.Services.HasService("mysql") {
-			if ok, err := helper.HasFile(detect.Application.Root, mp); err != nil {
-				return detect.Error(102), err
-			} else if !ok {
-				bp[jdbc.MariaDBDependency] = detect.BuildPlan[jdbc.MariaDBDependency]
-			}
-		}
-
-		if detect.Services.HasService("postgres") {
-			if ok, err := helper.HasFile(detect.Application.Root, pp); err != nil {
-				return detect.Error(102), err
-			} else if !ok {
-				bp[jdbc.PostgreSQLDependency] = detect.BuildPlan[jdbc.PostgreSQLDependency]
-			}
-		}
+	m := detect.Services.HasService("mariadb") || detect.Services.HasService("mysql")
+	mf, err := helper.HasFile(detect.Application.Root, mp)
+	if err != nil {
+		return detect.Error(102), err
 	}
 
-	if reflect.DeepEqual(bp, buildplan.BuildPlan{}) {
+	p := detect.Services.HasService("postgres")
+	pf, err := helper.HasFile(detect.Application.Root, pp)
+	if err != nil {
+		return detect.Error(102), err
+	}
+
+	if !(m && !mf) && !(p && !pf) {
 		return detect.Fail(), nil
 	}
 
-	return detect.Pass(bp)
+	q := buildplan.Plan{
+		Requires: []buildplan.Required{
+			{Name: jvmapplication.Dependency},
+		},
+	}
+
+	if m && !mf {
+		q.Provides = append(q.Provides, buildplan.Provided{Name: jdbc.MariaDBDependency})
+		q.Requires = append(q.Requires, buildplan.Required{Name: jdbc.MariaDBDependency})
+	}
+
+	if p && !pf {
+		q.Provides = append(q.Provides, buildplan.Provided{Name: jdbc.PostgreSQLDependency})
+		q.Requires = append(q.Requires, buildplan.Required{Name: jdbc.PostgreSQLDependency})
+	}
+
+	return detect.Pass(q)
 }

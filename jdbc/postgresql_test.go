@@ -20,8 +20,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/buildpack/libbuildpack/buildplan"
 	"github.com/cloudfoundry/jdbc-cnb/jdbc"
+	"github.com/cloudfoundry/libcfbuildpack/buildpackplan"
 	"github.com/cloudfoundry/libcfbuildpack/test"
 	"github.com/onsi/gomega"
 	"github.com/sclevine/spec"
@@ -40,7 +40,7 @@ func TestPostgreSQL(t *testing.T) {
 		})
 
 		it("returns true if build plan does exist", func() {
-			f.AddBuildPlan(jdbc.PostgreSQLDependency, buildplan.Dependency{})
+			f.AddPlan(buildpackplan.Plan{Name: jdbc.PostgreSQLDependency})
 			f.AddDependency(jdbc.PostgreSQLDependency, filepath.Join("testdata", "stub-postgresql.jar"))
 
 			_, ok, err := jdbc.NewPostgreSQL(f.Build)
@@ -55,7 +55,7 @@ func TestPostgreSQL(t *testing.T) {
 		})
 
 		it("contributes driver", func() {
-			f.AddBuildPlan(jdbc.PostgreSQLDependency, buildplan.Dependency{})
+			f.AddPlan(buildpackplan.Plan{Name: jdbc.PostgreSQLDependency})
 			f.AddDependency(jdbc.PostgreSQLDependency, filepath.Join("testdata", "stub-postgresql.jar"))
 
 			y, ok, err := jdbc.NewPostgreSQL(f.Build)
