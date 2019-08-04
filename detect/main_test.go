@@ -49,15 +49,13 @@ func TestDetect(t *testing.T) {
 			f.AddService("mariadb", services.Credentials{"test-key": "test-value"})
 
 			g.Expect(d(f.Detect)).To(gomega.Equal(detect.PassStatusCode))
-			g.Expect(f.Plans).To(gomega.Equal(buildplan.Plans{
-				Plan: buildplan.Plan{
-					Provides: []buildplan.Provided{
-						{Name: jdbc.MariaDBDependency},
-					},
-					Requires: []buildplan.Required{
-						{Name: jvmapplication.Dependency},
-						{Name: jdbc.MariaDBDependency},
-					},
+			g.Expect(f.Plans).To(test.HavePlans(buildplan.Plan{
+				Provides: []buildplan.Provided{
+					{Name: jdbc.MariaDBDependency},
+				},
+				Requires: []buildplan.Required{
+					{Name: jvmapplication.Dependency},
+					{Name: jdbc.MariaDBDependency},
 				},
 			}))
 		})
@@ -66,15 +64,13 @@ func TestDetect(t *testing.T) {
 			f.AddService("mysql", services.Credentials{"test-key": "test-value"})
 
 			g.Expect(d(f.Detect)).To(gomega.Equal(detect.PassStatusCode))
-			g.Expect(f.Plans).To(gomega.Equal(buildplan.Plans{
-				Plan: buildplan.Plan{
-					Provides: []buildplan.Provided{
-						{Name: jdbc.MariaDBDependency},
-					},
-					Requires: []buildplan.Required{
-						{Name: jvmapplication.Dependency},
-						{Name: jdbc.MariaDBDependency},
-					},
+			g.Expect(f.Plans).To(test.HavePlans(buildplan.Plan{
+				Provides: []buildplan.Provided{
+					{Name: jdbc.MariaDBDependency},
+				},
+				Requires: []buildplan.Required{
+					{Name: jvmapplication.Dependency},
+					{Name: jdbc.MariaDBDependency},
 				},
 			}))
 		})
@@ -101,17 +97,15 @@ func TestDetect(t *testing.T) {
 			f.AddService("postgresql", services.Credentials{"test-key": "test-value"})
 
 			g.Expect(d(f.Detect)).To(gomega.Equal(detect.PassStatusCode))
-			g.Expect(f.Plans).To(gomega.Equal(buildplan.Plans{
-				Plan: buildplan.Plan{
-					Provides: []buildplan.Provided{
-						{Name: jdbc.MariaDBDependency},
-						{Name: jdbc.PostgreSQLDependency},
-					},
-					Requires: []buildplan.Required{
-						{Name: jvmapplication.Dependency},
-						{Name: jdbc.MariaDBDependency},
-						{Name: jdbc.PostgreSQLDependency},
-					},
+			g.Expect(f.Plans).To(test.HavePlans(buildplan.Plan{
+				Provides: []buildplan.Provided{
+					{Name: jdbc.MariaDBDependency},
+					{Name: jdbc.PostgreSQLDependency},
+				},
+				Requires: []buildplan.Required{
+					{Name: jvmapplication.Dependency},
+					{Name: jdbc.MariaDBDependency},
+					{Name: jdbc.PostgreSQLDependency},
 				},
 			}))
 		})
@@ -121,17 +115,15 @@ func TestDetect(t *testing.T) {
 			f.AddService("postgresql", services.Credentials{"test-key": "test-value"})
 
 			g.Expect(d(f.Detect)).To(gomega.Equal(detect.PassStatusCode))
-			g.Expect(f.Plans).To(gomega.Equal(buildplan.Plans{
-				Plan: buildplan.Plan{
-					Provides: []buildplan.Provided{
-						{Name: jdbc.MariaDBDependency},
-						{Name: jdbc.PostgreSQLDependency},
-					},
-					Requires: []buildplan.Required{
-						{Name: jvmapplication.Dependency},
-						{Name: jdbc.MariaDBDependency},
-						{Name: jdbc.PostgreSQLDependency},
-					},
+			g.Expect(f.Plans).To(test.HavePlans(buildplan.Plan{
+				Provides: []buildplan.Provided{
+					{Name: jdbc.MariaDBDependency},
+					{Name: jdbc.PostgreSQLDependency},
+				},
+				Requires: []buildplan.Required{
+					{Name: jvmapplication.Dependency},
+					{Name: jdbc.MariaDBDependency},
+					{Name: jdbc.PostgreSQLDependency},
 				},
 			}))
 		})
