@@ -40,9 +40,9 @@ stacks  = [ "io.buildpacks.stacks.bionic", "org.cloudfoundry.stacks.cflinuxfs3" 
 [[metadata.dependencies]]
 id      = "postgresql-jdbc"
 name    = "PostgreSQL JDBC Driver"
-version = "42.2.7"
-uri     = "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.2.7/postgresql-42.2.7.jar"
-sha256  = "c8d3df209b3c1a2edcd9ce21c6d318ad13479dbda12a1963a17904e26bb4c9f4"
+version = "42.2.8"
+uri     = "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.2.8/postgresql-42.2.8.jar"
+sha256  = "7fb81e74f5c25a5c40a997d9b83333fdd3b5d63a0b3d61cba6d562c7e3a7f3f6"
 stacks  = [ "io.buildpacks.stacks.bionic", "org.cloudfoundry.stacks.cflinuxfs3" ]
 
   [[metadata.dependencies.licenses]]
