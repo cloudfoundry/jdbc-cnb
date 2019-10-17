@@ -67,7 +67,7 @@ func TestPostgreSQL(t *testing.T) {
 			layer := f.Build.Layers.Layer("postgresql-jdbc")
 			g.Expect(layer).To(test.HaveLayerMetadata(false, false, true))
 			g.Expect(filepath.Join(layer.Root, "stub-postgresql.jar")).To(gomega.BeARegularFile())
-			g.Expect(layer).To(test.HaveAppendPathLaunchEnvironment("CLASSPATH", "%s",
+			g.Expect(layer).To(test.HavePrependPathLaunchEnvironment("CLASSPATH", "%s",
 				filepath.Join(layer.Root, "stub-postgresql.jar")))
 		})
 	}, spec.Report(report.Terminal{}))
