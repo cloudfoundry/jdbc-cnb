@@ -22,7 +22,6 @@ import (
 	"github.com/buildpack/libbuildpack/buildplan"
 	"github.com/buildpack/libbuildpack/detect"
 	"github.com/cloudfoundry/jdbc-cnb/jdbc"
-	"github.com/cloudfoundry/jvm-application-cnb/jvmapplication"
 	"github.com/cloudfoundry/libcfbuildpack/services"
 	"github.com/cloudfoundry/libcfbuildpack/test"
 	"github.com/onsi/gomega"
@@ -54,7 +53,7 @@ func TestDetect(t *testing.T) {
 					{Name: jdbc.MariaDBDependency},
 				},
 				Requires: []buildplan.Required{
-					{Name: jvmapplication.Dependency},
+					{Name: "jvm-application"},
 					{Name: jdbc.MariaDBDependency},
 				},
 			}))
@@ -69,7 +68,7 @@ func TestDetect(t *testing.T) {
 					{Name: jdbc.MariaDBDependency},
 				},
 				Requires: []buildplan.Required{
-					{Name: jvmapplication.Dependency},
+					{Name: "jvm-application"},
 					{Name: jdbc.MariaDBDependency},
 				},
 			}))
@@ -85,7 +84,7 @@ func TestDetect(t *testing.T) {
 						{Name: jdbc.PostgreSQLDependency},
 					},
 					Requires: []buildplan.Required{
-						{Name: jvmapplication.Dependency},
+						{Name: "jvm-application"},
 						{Name: jdbc.PostgreSQLDependency},
 					},
 				},
@@ -103,7 +102,7 @@ func TestDetect(t *testing.T) {
 					{Name: jdbc.PostgreSQLDependency},
 				},
 				Requires: []buildplan.Required{
-					{Name: jvmapplication.Dependency},
+					{Name: "jvm-application"},
 					{Name: jdbc.MariaDBDependency},
 					{Name: jdbc.PostgreSQLDependency},
 				},
@@ -121,7 +120,7 @@ func TestDetect(t *testing.T) {
 					{Name: jdbc.PostgreSQLDependency},
 				},
 				Requires: []buildplan.Required{
-					{Name: jvmapplication.Dependency},
+					{Name: "jvm-application"},
 					{Name: jdbc.MariaDBDependency},
 					{Name: jdbc.PostgreSQLDependency},
 				},
