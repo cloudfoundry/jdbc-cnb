@@ -21,10 +21,10 @@ import (
 	"os"
 	"regexp"
 
-	"github.com/buildpack/libbuildpack/buildplan"
+	"github.com/buildpacks/libbuildpack/v2/buildplan"
 	"github.com/cloudfoundry/jdbc-cnb/jdbc"
-	"github.com/cloudfoundry/libcfbuildpack/detect"
-	"github.com/cloudfoundry/libcfbuildpack/helper"
+	"github.com/cloudfoundry/libcfbuildpack/v2/detect"
+	"github.com/cloudfoundry/libcfbuildpack/v2/helper"
 )
 
 var mp = regexp.MustCompile(".*(mariadb-java-client|mysql-connector-java)-[\\d].*\\.jar")
