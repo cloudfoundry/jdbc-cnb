@@ -28,9 +28,9 @@ id = "org.cloudfoundry.stacks.cflinuxfs3"
 [[metadata.dependencies]]
 id      = "mariadb-jdbc"
 name    = "MariaDB JDBC Driver"
-version = "2.5.4"
-uri     = "https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/2.5.4/mariadb-java-client-2.5.4.jar"
-sha256  = "5fafee1aad82be39143b4bfb8915d6c2d73d860938e667db8371183ff3c8500a"
+version = "2.6.0"
+uri     = "https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/2.6.0/mariadb-java-client-2.6.0.jar"
+sha256  = "7e0882a76f59ed7dfc50b00936cc59d70148553daededad2c7f5423314e503a8"
 stacks  = [ "io.buildpacks.stacks.bionic", "org.cloudfoundry.stacks.cflinuxfs3" ]
 
   [[metadata.dependencies.licenses]]
